@@ -1,8 +1,4 @@
-export type FaqsType = {
-    id: number,
-    question: string,
-    answer: string,
-}
+import { FaqsType } from "model/faq";
 
 export const faqsData: FaqsType[] = [
     {
