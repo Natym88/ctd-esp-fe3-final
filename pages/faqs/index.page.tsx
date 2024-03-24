@@ -29,13 +29,13 @@ interface FaqsPageProps {
 	);
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async () => {
 	const response = await fetch(BASE_URL + "api/faqs");
 	const faqs = await response.json();
 
 	return {
 		props: {
-			faqs,
+			faqs: Array.isArray(faqs) ? faqs : [],
 		},
 	};
 };
