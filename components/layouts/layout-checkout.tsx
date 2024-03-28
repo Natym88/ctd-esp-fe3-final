@@ -14,7 +14,6 @@ const LayoutCheckout: FC<PropsWithChildren> = ({children}: PropsWithChildren) =>
                 <Box display={'flex'} flexGrow={1}>
                     {children}
                 </Box>
-                <GeneralFooter />
             </Stack>
         </>
     );

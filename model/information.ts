@@ -6,7 +6,7 @@ export interface PersonalInfo {
 
 export interface AddressInfo {
     address: string,
-    apt?: string | undefined,
+    apt?: string | null,
     city: string,
     provincia: string,
     zip: string

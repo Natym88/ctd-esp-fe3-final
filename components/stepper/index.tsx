@@ -9,6 +9,7 @@ import { AddressInfo, PaymentInfo, PersonalInfo } from 'model/information';
 import AddressForm from '../forms/address';
 import PaymentForm from '../forms/payment';
 import { CheckoutInput } from 'dh-marvel/features/checkout/checkout.types';
+import { useCheckout } from 'context';
 
 const steps = [{
     label:'Datos personales'
@@ -21,53 +22,16 @@ const steps = [{
 }];
 
 interface MyStepperProps {
-    getData: (data: CheckoutInput) => void;
+    confirmation: () => void;
 }
 
-export default function MyStepper({getData}: MyStepperProps) {
+export default function MyStepper({confirmation}: MyStepperProps) {
     const [activeStep, setActiveStep] = React.useState(0);
-    const [CheckoutData, setCheckoutData] = React.useState<CheckoutInput>({
-        customer: {
-            name: "",
-            lastname: "",
-            email: "",
-            address: {
-                address1: "",
-                address2: "",
-                city: "",
-                state: "",
-                zipCode: "",
-            },
-        },  
-        card: {
-            nameOnCard: "",
-            number: "",
-            cvc: "",
-            expDate: ""
-        },
-        order: {
-            name: "",
-            image: "",
-            price: 0
-        }
-    })
+    const { checkoutData, setCheckoutData } = useCheckout();
     
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
-
-    const getFromPersonal = (data: PersonalInfo) => {
-        setCheckoutData(prev => ({...prev, personalInfo: data}))
-    }
-
-    const getFromAddress = (data: AddressInfo) => {
-        setCheckoutData(prev => ({...prev, addressInfo: data}))
-    }
-
-    const getFromPayment = (data: PaymentInfo) => {
-        setCheckoutData(prev => ({...prev, paymentInfo: data}))
-    }
-
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -76,10 +40,6 @@ export default function MyStepper({getData}: MyStepperProps) {
     const handleReset = () => {
         setActiveStep(0);
     };
-
-    const handleCheckoutdata = () => {
-
-    }
 
     return (
         <Box sx={{ width: '100%', flex: '1' }}>
@@ -95,19 +55,18 @@ export default function MyStepper({getData}: MyStepperProps) {
             </Stepper>
             {activeStep === steps.length ? (
         <React.Fragment>
-          <PaymentForm getFromPayment={getFromPayment} handleNext={handleNext} />
+          <PaymentForm confirmation={confirmation}/>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={handleBack}>Volver</Button>
             <Button onClick={handleReset}>Reset</Button>
-            <Button onClick={handleCheckoutdata}>Confirmar</Button>
           </Box>
         </React.Fragment>
       ) : (
         <React.Fragment>
             {activeStep == 0 ? 
-            <PersonalForm getFromPersonal={getFromPersonal} handleNext={handleNext} />
-            : <AddressForm getFromAddress={getFromAddress} handleNext={handleNext} />}
+            <PersonalForm handleNext={handleNext} />
+            : <AddressForm handleNext={handleNext} />}
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
               color="inherit"

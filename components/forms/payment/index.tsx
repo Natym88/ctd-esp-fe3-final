@@ -8,13 +8,14 @@ import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import Cards, { ReactCreditCardsProps } from 'react-credit-cards-2';
 import MyInput from 'dh-marvel/components/utils/input';
 import { Box, Button, Typography } from '@mui/material';
+import { useCheckout } from 'context';
 
-interface PaymentFormProps {
-    getFromPayment: (info: PaymentInfo) => void;
-    handleNext: () => void;
+interface Props {
+    confirmation: () => void;
 }
+const PaymentForm = ({confirmation}: Props) => {
 
-const PaymentForm = ({ getFromPayment, handleNext }: PaymentFormProps) => {
+    const { checkoutData, setCheckoutData } = useCheckout();
 
     type DataForm = yup.InferType<typeof paymentSchema>;
 
@@ -34,8 +35,13 @@ const PaymentForm = ({ getFromPayment, handleNext }: PaymentFormProps) => {
     });
 
     const onSubmit = (data: DataForm) => {
-        getFromPayment(data);
-        handleNext();
+        const newData = checkoutData;
+        newData.card.nameOnCard = data.cardName;
+        newData.card.number = data.cardNumber;
+        newData.card.expDate = data.expDate;
+        newData.card.cvc = data.cvv;
+        setCheckoutData(newData)
+        confirmation();
     };
 
     const [dateValue, setDateValue] = useState("")

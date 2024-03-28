@@ -6,14 +6,17 @@ import { personalSchema } from 'model/formSchema';
 import { PersonalInfo } from 'model/information';
 import { Typography, Box, Button } from '@mui/material';
 import MyInput from 'dh-marvel/components/utils/input';
+import { useCheckout } from 'context';
+import { CheckoutInput } from 'dh-marvel/features/checkout/checkout.types';
 
 interface PersonalFormProps {
-    getFromPersonal: (info: PersonalInfo) => void;
     handleNext: () => void;
 }
 
-const PersonalForm = ({getFromPersonal, handleNext}: PersonalFormProps) => {
+const PersonalForm = ({handleNext}: PersonalFormProps) => {
 
+    const { checkoutData, setCheckoutData } = useCheckout();
+    
     type DataForm = yup.InferType<typeof personalSchema>;
 
     const {
@@ -31,7 +34,11 @@ const PersonalForm = ({getFromPersonal, handleNext}: PersonalFormProps) => {
     });
 
     const onSubmit = (data: DataForm) => {
-        getFromPersonal(data);
+        const customer = checkoutData;
+        customer.customer.name = data.name;
+        customer.customer.lastname = data.lastName;
+        customer.customer.email = data.email;
+        setCheckoutData(customer)
         handleNext();
     };
 

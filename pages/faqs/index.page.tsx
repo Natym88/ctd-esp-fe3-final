@@ -1,27 +1,32 @@
+import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import BodySingle from "dh-marvel/components/layouts/body/single/body-single";
 import { BASE_URL } from "dh-marvel/services/APIConfig";
 import { FaqsType } from "model/faq";
 import { NextPage, GetStaticProps } from "next";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface FaqsPageProps {
 	faqs: FaqsType[];
 }
 
- const FaqsPage: NextPage<FaqsPageProps> | null = ({faqs}) => {
-	
+const FaqsPage: NextPage<FaqsPageProps> | null = ({ faqs }) => {
+
 	return (
 		<BodySingle>
 			<section>
 				<h1 className="text-3xl font-bold my-6">FAQs</h1>
 				<div className="grid grid-cols-1 gap-4">
 					{faqs.map((faq) => (
-						<div
-							key={faq.id}
-							className="bg-slate-950/45 rounded-lg shadow-md p-4"
-						>
-							<h2 className="text-lg font-semibold mb-2">{faq.question}</h2>
-							<p className="text-gray-300">{faq.answer}</p>
-						</div>
+						<Accordion key={faq.id}>
+							<AccordionSummary
+								expandIcon={<ExpandMoreIcon />}
+								aria-controls="panel1-content"
+								id="panel1-header"
+							>{faq.question}</AccordionSummary>
+							<AccordionDetails>
+								<p className="text-gray-300">{faq.answer}</p>
+							</AccordionDetails>
+						</Accordion>
 					))}
 				</div>
 			</section>
@@ -40,4 +45,4 @@ export const getStaticProps: GetStaticProps = async () => {
 	};
 };
 
- export default FaqsPage;
+export default FaqsPage;

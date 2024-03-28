@@ -5,7 +5,7 @@ import Home from './home/index.page';
 import { getComics } from 'dh-marvel/services/marvel/marvel.service';
 import { Comic } from 'model/comic';
 import { useState } from 'react';
-import { Button } from '@mui/material';
+import { Button, Container } from '@mui/material';
 import { useRouter } from 'next/router';
 
 interface Props {
@@ -36,13 +36,13 @@ const Index: NextPage<Props> = ({comics}) => {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
 
-            <BodySingle title={"Comics"}>
+            <Container>
                 <Home comics={comics}/>
                 {offset != 0 &&
                     <Button onClick={() => handleOffsetChange(offset - cant)}>Anterior</Button>
                 }
                 <Button onClick= {() => handleOffsetChange(offset + cant)}>Siguiente</Button>
-            </BodySingle>
+            </Container>
         </>
     )
 }
@@ -50,9 +50,10 @@ const Index: NextPage<Props> = ({comics}) => {
     
 export const getServerSideProps: GetServerSideProps<Props> = async ({query}) => {
 
-    const offset = query?.offset || '0';
+    const offset = parseInt(query?.offset as string || '0');
+    const limit = 12
 
-    const comics = await getComics(parseInt(offset as string), parseInt(offset as string) + 12);    
+    const comics = await getComics(offset, limit);    
     
     return {
       props: {

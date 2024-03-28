@@ -6,13 +6,15 @@ import { addressSchema } from 'model/formSchema';
 import { AddressInfo } from 'model/information';
 import { Typography, FormControl, InputLabel, Select, MenuItem, Box, Button } from '@mui/material';
 import MyInput from 'dh-marvel/components/utils/input';
+import { useCheckout } from 'context';
 
 interface AddressFormProps {
-    getFromAddress: (info: AddressInfo) => void,
     handleNext: () => void;
 }
 
-const AddressForm = ({ getFromAddress, handleNext }: AddressFormProps) => {
+const AddressForm = ({ handleNext }: AddressFormProps) => {
+
+    const { checkoutData, setCheckoutData } = useCheckout();
 
     type DataForm = yup.InferType<typeof addressSchema>;
 
@@ -33,7 +35,15 @@ const AddressForm = ({ getFromAddress, handleNext }: AddressFormProps) => {
     });
 
     const onSubmit = (data: DataForm) => {
-        getFromAddress(data);
+        const newData = checkoutData;
+        newData.customer.address.address1 = data.address;
+        if (data.apt) {
+            newData.customer.address.address2 = data.apt;
+        }
+        newData.customer.address.city = data.city;
+        newData.customer.address.state = data.provincia;
+        newData.customer.address.zipCode = data.zip;
+        setCheckoutData(newData)
         handleNext();
     };
 
@@ -70,7 +80,7 @@ const AddressForm = ({ getFromAddress, handleNext }: AddressFormProps) => {
                 label="Ciudad"
                 type="text"
                 control={control}
-                defaultValue = ""
+                defaultValue=""
                 required
             />
 
