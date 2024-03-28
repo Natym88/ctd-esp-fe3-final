@@ -19,17 +19,21 @@ interface Props {
 
 const Comic = ({ comic, characters, creators }: Props) => {
 
+  let checkout = "";
+  if(comic.stock > 0) {
+    checkout = `/checkout?comic=${comic.title}&price=${comic.price}&comicImg=${comic.thumbnail.path + '.' + comic.thumbnail.extension}`
+  }
   return (
     <BodySingle title={comic.title} containerProps={{sx: {minHeight: 'calc(100vh - 121px)'}}}>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
         <Container style={{ width: '300px', margin: 0 }} >
           <Image src={`${comic.thumbnail.path + '.' + comic.thumbnail.extension}`} height={500} width={300} />
-          <Link href={`/checkout`}><Button>Comprar</Button></Link>
+          <Link href={checkout}><Button variant='contained' disabled={comic.stock == 0}>Comprar</Button></Link>
         </Container>
-        {characters.length > 0 &&
-          <Container style={{ display: 'flex', justifyContent: 'start', flexDirection: 'column', maxWidth: '400px' }}>
-          <h2>Precio: ${comic.price}</h2>
+          <Container style={{ display: 'flex', justifyContent: 'start', flexDirection: 'column', maxWidth: '400px', margin:'0' }}>
+          <h2>Precio: ${comic.price} <span style={{fontSize: '1rem', verticalAlign: 'middle', marginLeft: '3px'}}><del>${comic.oldPrice}</del></span></h2>
           {comic.stock > 0 ? `Stock: ${comic.stock}` : 'Sin stock'}
+          {characters.length > 0 &&
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -40,7 +44,7 @@ const Comic = ({ comic, characters, creators }: Props) => {
                 <MyList>{characters}</MyList>
 
               </AccordionDetails>
-            </Accordion>
+            </Accordion>}
             {
             creators.length > 0 &&
             <Accordion>
@@ -55,7 +59,6 @@ const Comic = ({ comic, characters, creators }: Props) => {
             </Accordion>
           }
           </Container>
-        }
       </div>
     </BodySingle>
   )

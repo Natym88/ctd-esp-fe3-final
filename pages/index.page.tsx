@@ -7,7 +7,6 @@ import { Comic } from 'model/comic';
 import { useState } from 'react';
 import { Button } from '@mui/material';
 import { useRouter } from 'next/router';
-import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
 
 interface Props {
     comics: Comic[];
@@ -17,7 +16,12 @@ const Index: NextPage<Props> = ({comics}) => {
 
     const router = useRouter();
     const cant = 12;
-    const [offset, setOffset] = useState(0);
+    const {queryOffset} = router.query
+    let initialOffset;
+    if(queryOffset) {
+        initialOffset = parseInt(queryOffset.toString())
+    } 
+    const [offset, setOffset] = useState(initialOffset || 0);
 
     const handleOffsetChange = (newOffset: number) => {
         setOffset(newOffset);
@@ -44,11 +48,11 @@ const Index: NextPage<Props> = ({comics}) => {
 }
 
     
-export const getServerSideProps: GetServerSideProps<Props> = async ({params}) => {
+export const getServerSideProps: GetServerSideProps<Props> = async ({query}) => {
 
-    const offset = params?.offset || '0';
+    const offset = query?.offset || '0';
 
-    const comics = await getComics(parseInt(offset as string), parseInt(offset as string) + 12);   
+    const comics = await getComics(parseInt(offset as string), parseInt(offset as string) + 12);    
     
     return {
       props: {

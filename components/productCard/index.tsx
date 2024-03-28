@@ -46,7 +46,7 @@ const ProductCard = ({ children }: ProductCardProps) => {
                 </CardContent>
                 <CardActions>
                 <Link href={`/`}><Button size="small">Comprar</Button></Link>
-                <Link href={`/comic/${children.id}`}><Button size="small">Más información</Button></Link>
+                <Link href={`/comics/${children.id}`}><Button size="small">Ver detalle</Button></Link>
                 </CardActions>
             </MyCard>
         </Grid>
